@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Menu</title>
+    <link rel="stylesheet" href="styles/manu.css">
+</head>
+<body>
+    <h1>Today's Meal Menu</h1>
+    <div class="menu-section">
+        <div onclick="showMenu('breakfast')" class="meal-category">
+            <img src="images/DALL·E 2025-01-15 23.08.00 - A vibrant image of a traditional Bengali breakfast featuring freshly made ruti (flatbreads) served with a bowl of mangso (spicy meat curry). The flatb.webp" alt="Breakfast">
+            <h3>Breakfast</h3>
+        </div>
+        <div onclick="showMenu('lunch')" class="meal-category">
+            <img src="images/DALL·E 2025-01-15 23.12.25 - A vibrant image of a fusion Bengali-Arabic lunch spread. The meal is served on a large brass tray with plain rice (bhaat) at the center, accompanied b.webp" alt="Lunch">
+            <h3>Lunch</h3>
+        </div>
+        <div onclick="showMenu('dinner')" class="meal-category">
+            <img src="images/DALL·E 2025-01-15 23.14.08 - A vibrant image of a traditional Bengali dinner spread with a touch of sweetness. The dinner features plain rice (bhaat) served with a rich and flavor.webp" alt="Dinner">
+            <h3>Dinner</h3>
+        </div>
+    </div>
+    <div id="meal-details" class="hidden">
+        <h2 id="meal-title"></h2>
+        <div id="meal-items" class="menu-section"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

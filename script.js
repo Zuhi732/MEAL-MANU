@@ -7,7 +7,7 @@ const mealData = {
     },
     {
       name: "Ruti & mangso",
-      img: "/images/DALL·E 2025-01-15 23.34.32 - A realistic image of a traditional Bengali meal featuring freshly made ruti (flatbreads) served with a bowl of spicy mangso (meat curry). The flatbrea.webp",
+      img: "images/DALL·E 2025-01-15 23.34.32 - A realistic image of a traditional Bengali meal featuring freshly made ruti (flatbreads) served with a bowl of spicy mangso (meat curry). The flatbrea.webp",
     },
     {
       name: "Orange Juice",

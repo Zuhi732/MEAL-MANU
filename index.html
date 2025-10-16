@@ -1,31 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meal Menu</title>
-    <link rel="stylesheet" href="styles/manu.css">
-</head>
-<body>
-    <h1>Today's Meal Menu</h1>
-    <div class="menu-section">
-        <div onclick="showMenu('breakfast')" class="meal-category">
-            <img src="images/DALL·E 2025-01-15 23.08.00 - A vibrant image of a traditional Bengali breakfast featuring freshly made ruti (flatbreads) served with a bowl of mangso (spicy meat curry). The flatb.webp" alt="Breakfast">
-            <h3>Breakfast</h3>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <style>
+      /* Custom Styles & Animations */
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+      .animated-gradient {
+        background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #2c3e50);
+        background-size: 400% 400%;
+        animation: gradient-animation 15s ease infinite;
+      }
+      @keyframes gradient-animation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .category-card,
+      .meal-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.2),
+          0 10px 10px -5px rgba(245, 158, 11, 0.1);
+      }
+      .meal-card:hover {
+        transform: translateY(-5px);
+      }
+      #meal-items-container {
+        transition: opacity 0.5s ease-in-out;
+      }
+      .meal-card.selected {
+        border-color: #16a34a; /* Green border */
+        box-shadow: 0 0 15px rgba(22, 163, 74, 0.3);
+      }
+      .selected-checkmark {
+        display: none;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #16a34a;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 18px;
+        text-align: center;
+        line-height: 30px;
+      }
+      .meal-card.selected .selected-checkmark {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg">
+      <nav
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="#" class="text-3xl font-bold text-amber-400">
+          Rezia's Kitchen</a
+        >
+        <div class="hidden md:flex space-x-8 items-center">
+          <a href="#menu" class="hover:text-amber-400 transition">Menu</a>
+          <a
+            href="#cart-section"
+            class="relative hover:text-amber-400 transition"
+          >
+            <i class="fa-solid fa-cart-shopping text-xl"></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-3 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center"
+              >0</span
+            >
+          </a>
+          <a href="#contact" class="hover:text-amber-400 transition"
+            >Place Order</a
+          >
         </div>
-        <div onclick="showMenu('lunch')" class="meal-category">
-            <img src="images/DALL·E 2025-01-15 23.12.25 - A vibrant image of a fusion Bengali-Arabic lunch spread. The meal is served on a large brass tray with plain rice (bhaat) at the center, accompanied b.webp" alt="Lunch">
-            <h3>Lunch</h3>
+      </nav>
+    </header>
+
+    <section
+      class="min-h-[70vh] flex items-center animated-gradient overflow-hidden"
+    >
+      <div class="container mx-auto px-6 text-center">
+        <h1
+          id="hero-title"
+          class="text-5xl md:text-7xl font-bold mb-4 opacity-0 transform transition-all duration-1000 ease-out translate-y-5"
+        >
+          Taste the Tradition
+        </h1>
+        <p
+          id="hero-subtitle"
+          class="text-xl text-gray-300 max-w-2xl mx-auto opacity-0 transform transition-all duration-1000 ease-out translate-y-5 delay-300"
+        >
+          Discover our delicious and freshly prepared meals for breakfast,
+          lunch, and dinner.
+        </p>
+      </div>
+    </section>
+
+    <main id="menu" class="py-20 bg-gray-900">
+      <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12 reveal">
+          Today's Meal Menu
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div
+            onclick="showMenu('breakfast')"
+            class="category-card bg-gray-800 rounded-2xl overflow-hidden cursor-pointer reveal border-2 border-transparent hover:border-amber-400"
+          >
+            <img
+              src="images/DALL·E 2025-01-15 23.08.00 - A vibrant image of a traditional Bengali breakfast featuring freshly made ruti (flatbreads) served with a bowl of mangso (spicy meat curry). The flatb.webp"
+              alt="Breakfast"
+              class="w-full h-64 object-cover"
+            />
+            <h3 class="text-2xl font-bold p-6">Breakfast</h3>
+          </div>
+          <div
+            onclick="showMenu('lunch')"
+            class="category-card bg-gray-800 rounded-2xl overflow-hidden cursor-pointer reveal border-2 border-transparent hover:border-amber-400"
+          >
+            <img
+              src="images/DALL·E 2025-01-15 23.12.25 - A vibrant image of a fusion Bengali-Arabic lunch spread. The meal is served on a large brass tray with plain rice (bhaat) at the center, accompanied b.webp"
+              alt="Lunch"
+              class="w-full h-64 object-cover"
+            />
+            <h3 class="text-2xl font-bold p-6">Lunch</h3>
+          </div>
+          <div
+            onclick="showMenu('dinner')"
+            class="category-card bg-gray-800 rounded-2xl overflow-hidden cursor-pointer reveal border-2 border-transparent hover:border-amber-400"
+          >
+            <img
+              src="images/DALL·E 2025-01-15 23.14.08 - A vibrant image of a traditional Bengali dinner spread with a touch of sweetness. The dinner features plain rice (bhaat) served with a rich and flavor.webp"
+              alt="Dinner"
+              class="w-full h-64 object-cover"
+            />
+            <h3 class="text-2xl font-bold p-6">Dinner</h3>
+          </div>
         </div>
-        <div onclick="showMenu('dinner')" class="meal-category">
-            <img src="images/DALL·E 2025-01-15 23.14.08 - A vibrant image of a traditional Bengali dinner spread with a touch of sweetness. The dinner features plain rice (bhaat) served with a rich and flavor.webp" alt="Dinner">
-            <h3>Dinner</h3>
+
+        <div id="meal-details" class="mt-20 hidden">
+          <div class="flex justify-between items-center mb-10">
+            <h2 id="meal-title" class="text-3xl font-bold"></h2>
+            <button
+              onclick="closeMenu()"
+              class="text-2xl text-gray-400 hover:text-white"
+            >
+              &times;
+            </button>
+          </div>
+          <div
+            id="meal-items-container"
+            class="opacity-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+          ></div>
         </div>
-    </div>
-    <div id="meal-details" class="hidden">
-        <h2 id="meal-title"></h2>
-        <div id="meal-items" class="menu-section"></div>
-    </div>
-    <script src="script.js"></script>
-</body>
+      </div>
+    </main>
+
+    <section id="cart-section" class="py-20 bg-gray-800 hidden">
+      <div class="container mx-auto px-6 reveal">
+        <h2 class="text-4xl font-bold text-center mb-12">Your Cart</h2>
+        <div
+          id="cart-items"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+        ></div>
+        <div
+          id="cart-empty-message"
+          class="text-center text-gray-400 text-xl hidden"
+        >
+          Your cart is empty.
+        </div>
+        <div class="text-center mt-12">
+          <button
+            id="clear-cart-btn"
+            onclick="clearCart()"
+            class="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition"
+          >
+            Clear Cart
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="py-20 animated-gradient">
+      <div class="container mx-auto px-6 reveal">
+        <h2 class="text-4xl font-bold text-center mb-12">Place Your Order</h2>
+        <form
+          action="https://formspree.io/f/xpwykedr"
+          method="POST"
+          class="w-full max-w-2xl mx-auto space-y-6"
+        >
+          <input
+            type="hidden"
+            name="selected_items"
+            id="selected-items-input"
+          />
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            required
+            class="w-full p-4 rounded-lg bg-gray-800/50 text-white placeholder-gray-400 border border-transparent focus:ring-2 focus:ring-amber-400 focus:outline-none"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            required
+            class="w-full p-4 rounded-lg bg-gray-800/50 text-white placeholder-gray-400 border border-transparent focus:ring-2 focus:ring-amber-400 focus:outline-none"
+          />
+          <textarea
+            name="delivery_address"
+            rows="4"
+            placeholder="Your Delivery Address & Special Instructions"
+            required
+            class="w-full p-4 rounded-lg bg-gray-800/50 text-white placeholder-gray-400 border border-transparent focus:ring-2 focus:ring-amber-400 focus:outline-none"
+          ></textarea>
+          <button
+            type="submit"
+            class="w-full bg-amber-500 text-gray-900 py-4 rounded-lg text-lg font-semibold hover:bg-amber-600 transition"
+          >
+            Confirm Order
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="bg-gray-900 py-8 text-center text-gray-400">
+      <p>&copy; 2025 Lazeez Menu. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- PREVIOUS CODE (Variables and Cart Logic) ---
+        let cart = [];
+
+        const mealData = {
+          breakfast: [
+            {
+              name: "Scrambled Eggs",
+              img: "images/DALL·E 2025-01-15 23.28.40 - A realistic image of freshly made scrambled eggs served on a white plate. The eggs are fluffy and golden, garnished with freshly chopped parsley. The .webp",
+            },
+            {
+              name: "Ruti Mangso",
+              img: "images/DALL·E 2025-01-15 23.34.32 - A realistic image of a traditional Bengali meal featuring freshly made ruti (flatbreads) served with a bowl of spicy mangso (meat curry). The flatbrea.webp",
+            },
+            {
+              name: "Orange Juice",
+              img: "images/DALL·E 2025-01-15 23.38.43 - A realistic image of a glass of freshly squeezed orange juice placed on a wooden table. The juice is vibrant and golden, served in a clear glass with .webp",
+            },
+            {
+              name: "Vuna Khichuri",
+              img: "images/DALL·E 2025-01-15 23.35.52 - A realistic image of a traditional Bengali meal featuring khichuri (lentil and rice dish) served with gorur mangso (spicy beef curry). The khichuri is.webp",
+            },
+          ],
+          lunch: [
+            {
+              name: "Beef with Rice",
+              img: "images/DALL·E 2025-01-15 23.59.39 - A realistic image of a plate of beef curry served with steamed white rice. The beef is tender and cooked in a rich, spicy gravy, garnished with fresh .webp",
+            },
+            {
+              name: "Chicken Curry",
+              img: "images/DALL·E 2025-01-15 23.42.24 - A realistic image of a bowl of chicken curry, featuring tender pieces of chicken cooked in a rich, spicy gravy. The curry is garnished with fresh cori.webp",
+            },
+            {
+              name: "Mixed Vegetables",
+              img: "images/DALL·E 2025-01-15 23.56.28 - A realistic image of a bowl of mixed vegetables cooked in a lightly spiced curry. The dish includes vibrant pieces of carrots, green beans, cauliflowe.webp",
+            },
+            {
+              name: "Biryani",
+              img: "images/DALL·E 2025-01-15 23.41.40 - A realistic image of a traditional plate of biryani, featuring fragrant basmati rice cooked with saffron and spices, layered with tender pieces of chi.webp",
+            },
+          ],
+          dinner: [
+            {
+              name: "Mutton Curry",
+              img: "images/DALL·E 2025-01-15 23.45.19 - A realistic image of a bowl of mutton curry, featuring tender pieces of mutton cooked in a rich and spicy gravy. The curry is garnished with fresh cor.webp",
+            },
+            {
+              name: "Fish Fry",
+              img: "images/DALL·E 2025-01-15 23.45.57 - A realistic image of crispy golden fish fry served on a white plate. The fish pieces are perfectly fried, with a crunchy coating and tender, juicy ins.webp",
+            },
+            {
+              name: "Plain Rice with Egg",
+              img: "images/DALL·E 2025-01-16 00.03.13 - A realistic image of a boiled egg sliced in half, revealing its perfectly cooked yellow yolk, placed on a white plate. The egg is garnished with a spr.webp",
+            },
+            {
+              name: "Rosogolla",
+              img: "images/DALL·E 2025-01-16 00.04.08 - A realistic image of traditional Bengali rosogolla, featuring soft, spongy white dumplings soaked in a light sugar syrup. The rosogollas are served in.webp",
+            },
+          ],
+        };
+
+        const mealDetails = document.getElementById("meal-details");
+        const mealTitle = document.getElementById("meal-title");
+        const mealItemsContainer = document.getElementById(
+          "meal-items-container"
+        );
+        const cartSection = document.getElementById("cart-section");
+        const cartItemsContainer = document.getElementById("cart-items");
+        const cartCount = document.getElementById("cart-count");
+        const cartEmptyMessage = document.getElementById("cart-empty-message");
+        const clearCartBtn = document.getElementById("clear-cart-btn");
+        const orderForm = document.querySelector("#contact form");
+
+        // --- NEW: HERO SECTION ANIMATION ---
+        const heroTitle = document.getElementById("hero-title");
+        const heroSubtitle = document.getElementById("hero-subtitle");
+        // Trigger animation shortly after page load
+        setTimeout(() => {
+          heroTitle.classList.remove("opacity-0", "translate-y-5");
+          heroSubtitle.classList.remove("opacity-0", "translate-y-5");
+        }, 100); // 100ms delay
+
+        // --- PREVIOUS CODE (Functions for menu and cart) ---
+        window.showMenu = (mealType) => {
+          mealTitle.textContent =
+            mealType.charAt(0).toUpperCase() + mealType.slice(1) + " Menu";
+          mealItemsContainer.innerHTML = "";
+
+          mealData[mealType].forEach((item) => {
+            const isSelected = cart.some(
+              (cartItem) => cartItem.name === item.name
+            );
+            const itemDiv = document.createElement("div");
+            itemDiv.className = `meal-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer relative border-2 border-transparent ${
+              isSelected ? "selected" : ""
+            }`;
+            itemDiv.onclick = () => addToCart(item);
+            itemDiv.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}" class="w-full h-48 object-cover">
+                    <p class="p-4 text-center font-semibold">${item.name}</p>
+                    <div class="selected-checkmark">✓</div>
+                `;
+            mealItemsContainer.appendChild(itemDiv);
+          });
+
+          mealDetails.classList.remove("hidden");
+          mealDetails.scrollIntoView({ behavior: "smooth", block: "start" });
+
+          setTimeout(
+            () => mealItemsContainer.classList.remove("opacity-0"),
+            100
+          );
+        };
+
+        window.addToCart = (item) => {
+          if (cart.some((cartItem) => cartItem.name === item.name)) {
+            cart = cart.filter((cartItem) => cartItem.name !== item.name);
+          } else {
+            cart.push(item);
+          }
+          updateCartDisplay();
+          const currentMenuType = mealTitle.textContent
+            .split(" ")[0]
+            .toLowerCase();
+          if (mealDetails.classList.contains("hidden") === false) {
+            showMenu(currentMenuType);
+          }
+        };
+
+        function updateCartDisplay() {
+          cartItemsContainer.innerHTML = "";
+          cartCount.textContent = cart.length;
+
+          if (cart.length === 0) {
+            cartSection.classList.add("hidden");
+            cartEmptyMessage.classList.remove("hidden");
+            clearCartBtn.classList.add("hidden");
+          } else {
+            cartSection.classList.remove("hidden");
+            cartEmptyMessage.classList.add("hidden");
+            clearCartBtn.classList.remove("hidden");
+            cart.forEach((item) => {
+              const cartItemDiv = document.createElement("div");
+              cartItemDiv.className = "bg-gray-700 rounded-lg overflow-hidden";
+              cartItemDiv.innerHTML = `
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover">
+                        <p class="p-4 text-center font-semibold">${item.name}</p>
+                    `;
+              cartItemsContainer.appendChild(cartItemDiv);
+            });
+          }
+        }
+
+        window.clearCart = () => {
+          cart = [];
+          updateCartDisplay();
+          const currentMenuType = mealTitle.textContent
+            .split(" ")[0]
+            .toLowerCase();
+          if (mealDetails.classList.contains("hidden") === false) {
+            showMenu(currentMenuType);
+          }
+        };
+
+        window.closeMenu = () => {
+          mealItemsContainer.classList.add("opacity-0");
+          setTimeout(() => mealDetails.classList.add("hidden"), 500);
+        };
+
+        orderForm.addEventListener("submit", (e) => {
+          if (cart.length === 0) {
+            alert(
+              "Your cart is empty! Please add items before placing an order."
+            );
+            e.preventDefault();
+            return;
+          }
+          const selectedItemsNames = cart.map((item) => item.name).join(", ");
+          const hiddenInput = document.getElementById("selected-items-input");
+          hiddenInput.value = selectedItemsNames;
+        });
+
+        // --- PREVIOUS CODE (Intersection Observer & Smooth Scrolling) ---
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) entry.target.classList.add("active");
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        document
+          .querySelectorAll(".reveal")
+          .forEach((el) => observer.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document
+              .querySelector(this.getAttribute("href"))
+              .scrollIntoView({ behavior: "smooth" });
+          });
+        });
+      });
+    </script>
+  </body>
 </html>
